@@ -46,7 +46,7 @@ function hiveSystem(): No {
   const usbs: [string, Date, string][] = [
     ['Disk&Ven_SanDiskette&Prod_Cruzer_Blade&Rev_1.00\\4C530001190815101234&0', U('2025-06-03 14:12:00'), 'Pendrive SanDiskette Cruzer (o da Dona Dirce com fotos do neto)'],
     ['Disk&Ven_Generic&Prod_Card_Reader&Rev_1.00\\000000000819&0', U('2026-08-19 18:40:00'), 'Leitor de cartão genérico'],
-    ['Disk&Ven_WD&Prod_Elements_25A2&Rev_1014\\575831314135&0', U('2026-02-02 11:05:00'), 'HD externo de backup'],
+    ['Disk&Ven_WDigitalis&Prod_Elementos_25A2&Rev_1014\\575831314135&0', U('2026-02-02 11:05:00'), 'HD externo de backup'],
     [USB_ALVO, PLUGOU, 'Pendrivix Turbo 3.0 USB Device'],
     ['Disk&Ven_Kingstron&Prod_DataTraveler_3.0&Rev_PMAP\\60A44C3FAE21B1A0C9F2&0', U('2026-09-12 16:30:00'), 'Kingstron DataTraveler 3.0'],
   ];
@@ -109,7 +109,7 @@ function hiveNtuser(): No {
 function prefetch(): Record<string, No> {
   const r = new Rng(5);
   const out: Record<string, No> = {};
-  const nomes = ['NAVEGADOR.EXE', 'EXCEL.EXE', 'WINWORD.EXE', 'ONEDRIVE.EXE', 'SVCHOST.EXE', 'SEARCHAPP.EXE', 'TEAMS.EXE', 'CONTABIL.EXE', 'SPOTIFAI.EXE', 'CALC.EXE', 'NOTEPAD.EXE', 'EXPLORER.EXE', 'TASKMGR.EXE', 'RUNTIMEBROKER.EXE', 'SETUPHOST.EXE', 'MSEDGEWEBVIEW2.EXE', 'DLLHOST.EXE', 'CONHOST.EXE', 'WMIPRVSE.EXE', 'TRAY.EXE', 'WUAUCLT.EXE', 'MPCMDRUN.EXE', 'CTFMON.EXE', 'SMARTSCREEN.EXE', 'BACKGROUNDTASKHOST.EXE'];
+  const nomes = ['NAVEGADOR.EXE', 'EXCEL.EXE', 'WINWORD.EXE', 'ONEDRIVE.EXE', 'SVCHOST.EXE', 'SEARCHAPP.EXE', 'TEAMS.EXE', 'CONTABIL.EXE', 'SPOTIFAI.EXE', 'CALC.EXE', 'NOTEPAD.EXE', 'EXPLORER.EXE', 'TASKMGR.EXE', 'RUNTIMEBROKER.EXE', 'SETUPHOST.EXE', 'WEBVIEWHOST.EXE', 'DLLHOST.EXE', 'CONHOST.EXE', 'WMIPRVSE.EXE', 'TRAY.EXE', 'WUAUCLT.EXE', 'MPCMDRUN.EXE', 'CTFMON.EXE', 'SMARTSCREEN.EXE', 'BACKGROUNDTASKHOST.EXE'];
   for (const n of nomes) {
     const hashPf = r.hex(8).toUpperCase();
     const ult = Array.from({ length: r.int(1, 8) }, () => new Date(U('2026-10-01 10:00:00').getTime() + r.prox() * 29 * 864e5)).sort((a, b) => b.getTime() - a.getTime());

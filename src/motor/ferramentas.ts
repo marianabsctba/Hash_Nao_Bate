@@ -90,7 +90,7 @@ registrar('imajador', {
     // verificação relê o disco depois: sem bloqueador, o Windows da estação já mexeu de novo
     const hVer = adulterado ? hashes(dadosDispositivo({ ...d, semente: d.semente + 1, id: d.id + '-v' }, true)) : hAq;
     const conteudo = bruto ? lido : new Uint8Array([...enc.encode('EVF\x09\x0d\x0a\xff\x00'), 1, 1, 0, ...lido.slice(0, 2048).map((x) => x ^ 0x5a), ...enc.encode(`header2 caso perito ${d.lacre ?? d.id}`)]);
-    const img: Arquivo = { tipo: 'arq', especial: { tipo: 'binario', magia: [], texto: [], formato: bruto ? 'DOS/MBR boot sector; partition 1 : ID=0x7, start-CHS (0x0,32,33), startsector 2048' : 'EWF/Expert Witness/EnCase image file format' }, _cache: conteudo, tam: bruto ? 65536 : 31337, mtime: new Date(Date.UTC(2026, 10, 22, 14, 0)) };
+    const img: Arquivo = { tipo: 'arq', especial: { tipo: 'binario', magia: [], texto: [], formato: bruto ? 'DOS/MBR boot sector; partition 1 : ID=0x7, start-CHS (0x0,32,33), startsector 2048' : 'EWF/Expert Witness image file format' }, _cache: conteudo, tam: bruto ? 65536 : 31337, mtime: new Date(Date.UTC(2026, 10, 22, 14, 0)) };
     imagens.set(img, d);
     gravar(ctx.raiz, `/evidencias/${nome}`, img);
     const log = [
@@ -214,7 +214,7 @@ const ARTEFATOS: [RegExp, string][] = [
   [/contacts2\.db$/, 'Android: agenda de contatos'],
   [/mmssms\.db$/, 'Android: SMS (tabela sms, date em milissegundos Unix)'],
   [/calllog\.db$/, 'Android: registro de chamadas'],
-  [/History$/, 'Navegador base Chromium: histórico (urls, visits; tempo WebKit, microssegundos desde 1601)'],
+  [/History$/, 'Navegador: histórico (urls, visits; tempo WebKit, microssegundos desde 1601)'],
   [/sms\.db$/, 'iOS: iMessage/SMS (message, handle; date em nanossegundos desde 2001)'],
   [/KnowledgeC\.db$/, 'iOS: uso do aparelho (ZOBJECT; ZSTARTDATE em segundos desde 2001)'],
   [/Photos\.sqlite$/, 'iOS: biblioteca de fotos (ZASSET; ZDATECREATED desde 2001, ZLATITUDE/ZLONGITUDE)'],

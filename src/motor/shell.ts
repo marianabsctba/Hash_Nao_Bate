@@ -150,7 +150,7 @@ export function tipoArquivo(a: Arquivo): string {
   if (ini.startsWith('ElfFile')) return 'MS Windows Vista Event Log, 3 chunks (no. 2 in use), next record no. 1234';
   if (ini.startsWith('MAM')) return 'MS Windows 10+ Prefetch, compressed (Xpress Huffman)';
   if (ini.startsWith('FILE0')) return 'data';
-  if (ini.startsWith('EVF')) return 'EWF/Expert Witness/EnCase image file format';
+  if (ini.startsWith('EVF')) return 'EWF/Expert Witness image file format';
   if (ini.startsWith('%PDF')) return 'PDF document, version 1.7';
   if (ini.startsWith('PK')) return 'Zip archive data, at least v2.0 to extract';
   if (ini.startsWith('\x7fELF')) return 'ELF 64-bit LSB pie executable, x86-64, dynamically linked, stripped';
@@ -284,16 +284,6 @@ function sugestao(nome: string): string | null {
     dir: 'Isto aqui é Linux. Use ls.',
     cls: 'Isto aqui é Linux. Use clear.',
     type: 'Isto aqui é Linux. Use cat.',
-    ftk: 'Procurando o imajador? Digite: man imajador',
-    cellebrite: 'Aqui o nome é celebrita. E não, não tem patrocínio.',
-    volatility: 'Aqui ele se chama volatil. Mesma alma, outro CNPJ.',
-    wireshark: 'Aqui ele se chama tubarao.',
-    tshark: 'Aqui ele se chama tubarao.',
-    plaso: 'Aqui ele se chama prazo. Porque sempre estoura.',
-    log2timeline: 'Aqui ele se chama prazo.',
-    exiftool: 'Aqui ele se chama exifeiro.',
-    foremost: 'Aqui ele se chama formiga. Carrega tudo nas costas.',
-    regripper: 'Aqui ele se chama regripador.',
     sudo: 'Você já é perita(o). Poder demais não é bom para ninguém.',
     vim: 'Editar evidência? Nem pensar. Leia com less, cat ou head.',
     nano: 'Editar evidência? Nem pensar.',

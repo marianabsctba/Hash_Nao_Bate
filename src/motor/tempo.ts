@@ -3,7 +3,7 @@
 
 const EPOCA_FILETIME = 11644473600n; // segundos entre 1601-01-01 e 1970-01-01
 const EPOCA_MAC = 978307200; // segundos entre 1970-01-01 e 2001-01-01 (Mac Absolute Time / Cocoa)
-const EPOCA_WEBKIT = 11644473600n; // WebKit/Chrome: microssegundos desde 1601-01-01
+const EPOCA_WEBKIT = 11644473600n; // WebKit: microssegundos desde 1601-01-01
 
 /** Data UTC a partir de "AAAA-MM-DD HH:MM:SS" no fuso indicado (horas, ex.: -3 para Brasília). */
 export function data(txt: string, fuso = -3): Date {

@@ -253,7 +253,8 @@ select, .q-input { background: #0f1013; color: var(--texto); border: 1px solid v
 .assin { text-align: center; margin-top: 30px; border-top: 1px solid #111; padding-top: 6px; width: 260px; margin-left: auto; margin-right: auto; }
 
 /* ---------- audiência ---------- */
-.ui.audiencia { display: flex; flex-direction: column; background: #140e0a; }
+.ui.audiencia { display: flex; flex-direction: column; justify-content: flex-end; background: transparent; pointer-events: none; }
+.ui.audiencia > * { pointer-events: auto; }
 .sala { flex: 1; min-height: 160px; }
 .sala svg { width: 100%; height: 100%; display: block; }
 .fala { margin: 0 auto 20px; width: min(880px, calc(100vw - 24px)); border-top: 3px solid var(--fita); }

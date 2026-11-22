@@ -8,8 +8,9 @@ import { caso05 } from './c05_nuvem';
 import { caso06 } from './c06_rede';
 import { caso07 } from './c07_linux';
 import { caso08 } from './c08_ram';
+import { caso09 } from './c09_drone';
 
-export const CASOS: Caso[] = [caso00, caso01, caso02, caso03, caso04, caso05, caso06, caso07, caso08];
+export const CASOS: Caso[] = [caso00, caso01, caso02, caso03, caso04, caso05, caso06, caso07, caso08, caso09];
 
 export function casoPorId(id: string): Caso | undefined {
   return CASOS.find((c) => c.id === id);

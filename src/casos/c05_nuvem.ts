@@ -21,7 +21,7 @@ function trilha(): No {
   const eventos = ['GetObject', 'GetObject', 'GetObject', 'PutObject', 'PutObject', 'ListObjects', 'DescribeInstances', 'AssumeRole', 'GetBucketLocation', 'HeadObject'];
   let id = 0;
   const rec = (t: Date, nome: string, ip: string, chave: string, extra: Record<string, unknown> = {}) => recs.push({
-    eventVersion: '1.09', eventTime: T.iso(t), eventSource: nome.includes('Instance') ? 'compute.nimbus.exemplo' : nome.includes('Role') ? 'iam.nimbus.exemplo' : 'storage.nimbus.exemplo', eventName: nome, awsRegion: 'sa-leste-1',
+    eventVersion: '1.09', eventTime: T.iso(t), eventSource: nome.includes('Instance') ? 'compute.nimbus.exemplo' : nome.includes('Role') ? 'iam.nimbus.exemplo' : 'storage.nimbus.exemplo', eventName: nome, regiao: 'sa-leste-1',
     sourceIPAddress: ip, userAgent: ip === IP_INVASOR ? 'nimbus-cli/2.13.4 Python/3.11 Linux/6.5 exec-env/none' : r.pick(['nimbus-sdk-js/3.4', 'nimbus-sdk-go/1.21', 'console.nimbus.exemplo']),
     userIdentity: { type: 'IAMUser', accessKeyId: chave, userName: chave === CHAVE_VAZADA ? 'deploy-antigo' : r.pick(['app-server', 'ci-pipeline', 'backup-job']) },
     requestParameters: nome.includes('Object') ? { bucketName: BUCKET, key: `comprovantes/${r.int(2024, 2026)}/${r.hex(10)}.pdf` } : { bucketName: BUCKET },

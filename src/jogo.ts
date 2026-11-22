@@ -9,7 +9,8 @@ import { executarLinha } from './motor/shell';
 import type { Ctx } from './motor/shell';
 import { iniciar3d, pausar3d, M } from './tres/motor3d';
 import { J, iniciarControles, soltarMouse, travado } from './tres/jogador';
-import { cenaPronta, montarCena, mira, mudarTela, preCarregarCena, removerItem } from './tres/cena3d';
+import { cenaPronta, humanos, montarCena, mira, mudarTela, preCarregarCena, removerItem } from './tres/cena3d';
+import { SALA_AUDIENCIA } from './casos/audiencia3d';
 import type { Alvo } from './tres/cena3d';
 import { abrirInspecao } from './tres/inspecao';
 import { criarTerminal, ansiHtml } from './ui/terminal';
@@ -623,7 +624,7 @@ function desenharCroqui(cv: HTMLCanvasElement) {
   g.lineWidth = 1;
   g.font = '10px system-ui';
   for (const mv of c.moveis) {
-    if (['quadro', 'janela', 'cortina'].includes(mv.tipo)) continue;
+    if (['quadro', 'janela', 'cortina', 'porta', 'portao', 'tapete'].includes(mv.tipo) || mv.solido === false || mv.pos[1] > 0.5) continue;
     const [w, , d] = mv.tam ?? [mv.tipo === 'cadeira' ? 0.5 : 1, 0, mv.tipo === 'cadeira' ? 0.5 : 0.6];
     g.save();
     g.translate(X(mv.pos[0]), Z(mv.pos[2]));
@@ -877,10 +878,22 @@ function telaAudiencia() {
   const fs = new Set(p.flags);
   const perguntas = c.audiencia.map((q, i) => ({ q, i })).filter(({ q }) => (!q.se || q.se.some((f) => fs.has(f))) && (!q.seNao || !q.seNao.some((f) => fs.has(f))));
   let idx = p.audiencia.length;
-  const sala = h('div', 'sala');
-  sala.innerHTML = salaSvg();
+  // sala de audiência em 3D, com o elenco: câmera parada no banco das testemunhas, virando para quem fala
+  const canvas = iniciar3d(camada);
+  montarCena(SALA_AUDIENCIA);
+  iniciarControles(canvas, camada);
+  J.livre = false;
+  J.olho = 1.25;
+  const POS: Record<string, [number, number]> = { juiza: [4, 0.75], defesa: [1.8, 4.2], promotoria: [6.2, 4.3] };
+  const olhar = (quem: string) => {
+    const [x, z] = POS[quem];
+    J.yaw = Math.atan2(-(x - J.pos.x), -(z - J.pos.z));
+    J.pitch = -0.02;
+    const id = quem === 'juiza' ? 'celeste' : quem === 'defesa' ? 'lourival' : 'eurico';
+    for (const [k, hm] of humanos) hm.tocar(k === id ? 'falando' : 'parado');
+  };
   const fala = h('div', 'painel fala');
-  ui.append(sala, fala);
+  ui.append(fala);
   const quem = { defesa: 'Dr. Lourival Brecha, advogado de defesa', juiza: 'Dra. Celeste Imparcial, juíza', promotoria: 'Dr. Eurico Denúncia, promotor' };
   const prox = () => {
     if (idx >= perguntas.length) {
@@ -891,6 +904,7 @@ function telaAudiencia() {
       return;
     }
     const { q, i } = perguntas[idx];
+    olhar(q.quem);
     fala.innerHTML = `<div class="quem ${q.quem}">${quem[q.quem]}</div><p class="pergunta">${md(q.pergunta)}</p>`;
     const ops = h('div', 'opcoes');
     for (const o of [...q.opcoes].sort(() => Math.random() - 0.5)) {
@@ -908,21 +922,11 @@ function telaAudiencia() {
   prox();
 }
 
-function salaSvg(): string {
-  return `<svg viewBox="0 0 800 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-  <rect width="800" height="300" fill="#2a1d14"/><rect y="0" width="800" height="170" fill="#3b2a1e"/>
-  <rect x="250" y="40" width="300" height="20" fill="#5b4330"/><text x="400" y="56" fill="#e7d3b0" font-size="14" text-anchor="middle" font-family="serif">JUSTIÇA (com fila de 3 anos)</text>
-  <rect x="260" y="120" width="280" height="90" fill="#6b4c33"/><rect x="240" y="110" width="320" height="16" fill="#80603f"/>
-  <circle cx="400" cy="92" r="18" fill="#a16207"/><rect x="380" y="108" width="40" height="30" fill="#111827"/>
-  <rect x="60" y="190" width="180" height="70" fill="#6b4c33"/><circle cx="150" cy="170" r="16" fill="#c68642"/><rect x="132" y="185" width="36" height="28" fill="#1e3a8a"/>
-  <rect x="560" y="190" width="180" height="70" fill="#6b4c33"/><circle cx="650" cy="170" r="16" fill="#8d5524"/><rect x="632" y="185" width="36" height="28" fill="#111"/>
-  <rect y="260" width="800" height="40" fill="#1c130d"/></svg>`;
-}
-
 // ====================== FIM ======================
 function telaFim() {
   if (!caso || !P) return;
   limparUi();
+  pausar3d();
   ui.classList.add('fim');
   Trilha.tocar('fim');
   const c = caso;
