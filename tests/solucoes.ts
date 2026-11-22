@@ -156,4 +156,18 @@ export const SOLUCOES: Record<string, Solucao> = {
     respostas: { q1: '203.0.113.9', q2: 'estagiario', q3: 'suporte', q4: '/var/www/html/uploads/imagem.php', q5: '2026-11-14 00:42' },
     evidencia: { q4: 'var/www/html/uploads/imagem.php' },
   },
+  c08: {
+    coletados: ['pc'],
+    flags: ['ram', 'isolou_rede'],
+    comandos: [
+      'volatil -f /casos/c08/recebidos/RECEPCAO-01_memoria.raw windows.info',
+      'volatil -f /casos/c08/recebidos/RECEPCAO-01_memoria.raw windows.pstree',
+      'volatil -f /casos/c08/recebidos/RECEPCAO-01_memoria.raw windows.malfind',
+      'volatil -f /casos/c08/recebidos/RECEPCAO-01_memoria.raw windows.netscan | grep ESTABLISHED | grep -v 192.0.2',
+      'volatil -f /casos/c08/recebidos/RECEPCAO-01_memoria.raw windows.cmdline | grep -i vss',
+      'strings /casos/c08/recebidos/RECEPCAO-01_memoria.raw | grep -i http | sort -u',
+      'echo contenção',
+    ],
+    respostas: { q1: 'svch0st.exe', q2: '6644', q3: '198.51.100.66', q4: 'vssadmin delete shadows /all /quiet', q5: 'contenção' },
+  },
 };
