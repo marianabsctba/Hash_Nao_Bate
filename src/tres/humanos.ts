@@ -6,7 +6,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils.js';
 
 const BASE = import.meta.env.BASE_URL;
-export const MODELOS = ['gilmar', 'ro', 'vandeco', 'thiaguinho', 'keyla', 'neide', 'leoncio', 'socorro', 'nildo', 'kevin', 'brenda', 'jefferson', 'pamela'];
+export const MODELOS = ['anselmo', 'josue', 'lurdes', 'celeste', 'lourival', 'eurico', 'ivone', 'gilson', 'dirce', 'wagner', 'zila', 'kaua', 'thais', 'valdir', 'rogerio', 'adamastor', 'cleiton', 'yara', 'washington', 'marlene'];
 
 const DEDO = /^(index|middle|ring|pinky|thumb)_0([1-3])_([lr])\./;
 const DEDO_OSSO = /^(index|middle|ring|pinky|thumb)_0([1-3])_([lr])$/;
@@ -147,7 +147,7 @@ export function preCarregar(ids: string[]) {
 
 /** qual modelo representa um personagem */
 export function modeloDe(id: string): string {
-  return MODELOS.includes(id) ? id : 'kevin';
+  return MODELOS.includes(id) ? id : 'wagner';
 }
 
 const CLIPE: Record<string, string> = {

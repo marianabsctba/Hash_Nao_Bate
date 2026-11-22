@@ -9,7 +9,7 @@ import { executarLinha } from './motor/shell';
 import type { Ctx } from './motor/shell';
 import { iniciar3d, pausar3d, M } from './tres/motor3d';
 import { J, iniciarControles, soltarMouse, travado } from './tres/jogador';
-import { montarCena, mira, mudarTela, removerItem } from './tres/cena3d';
+import { cenaPronta, montarCena, mira, mudarTela, preCarregarCena, removerItem } from './tres/cena3d';
 import type { Alvo } from './tres/cena3d';
 import { abrirInspecao } from './tres/inspecao';
 import { criarTerminal, ansiHtml } from './ui/terminal';
@@ -237,6 +237,8 @@ function telaChamado() {
   limparUi();
   ui.classList.add('chamado');
   Trilha.tocar('chamado');
+  // enquanto se lê o chamado, a cena já vem baixando
+  if (caso) preCarregarCena(caso.cena);
   const c = caso;
   const col = h('div', 'chamado-col');
   col.append(h('div', 'chamado-cab', `<span class="caso-num">Caso ${String(c.numero).padStart(2, '0')} · ${esc(c.modulo)}</span><h1>${esc(c.titulo)}</h1><p>${esc(c.resumo)}</p>`));
@@ -280,6 +282,9 @@ function telaCena() {
   const canvas = iniciar3d(camada);
   montarCena(caso.cena, P.telas, P.coletados);
   iniciarControles(canvas, camada);
+  const tela = h('div', 'carregando', `<div class="fita fita-carga"><div class="fita-txt">${'ISOLANDO A ÁREA · NÃO ULTRAPASSE · '.repeat(10)}</div></div><p>Chegando ao local: ${esc(caso.cena.local)}</p>`);
+  document.body.append(tela);
+  void cenaPronta().then(() => { tela.classList.add('some'); setTimeout(() => tela.remove(), 500); });
   J.livre = true;
   painelAberto = false;
   const topo = h('div', 'hud-topo');

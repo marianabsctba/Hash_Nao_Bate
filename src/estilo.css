@@ -276,3 +276,8 @@ select, .q-input { background: #0f1013; color: var(--texto); border: 1px solid v
 .fim-caixa details { background: var(--painel2); border-radius: 3px; padding: 8px 10px; margin: 6px 0; }
 .fim-caixa summary { cursor: pointer; }
 .fim-acoes { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+/* ---------- carregamento da cena ---------- */
+.carregando { position: fixed; inset: 0; z-index: 70; background: #070707; display: grid; place-items: center; align-content: center; gap: 30px; transition: opacity 0.45s; font-family: var(--maquina); color: var(--sub); }
+.carregando.some { opacity: 0; pointer-events: none; }
+.carregando .fita-carga { position: relative; left: auto; width: 110vw; transform: rotate(-3deg); }

@@ -2,7 +2,7 @@
 const BASE = `${import.meta.env.BASE_URL}som/`;
 export type Faixa = 'capa' | 'chamado' | 'cena' | 'custodia' | 'lab' | 'tensao' | 'audiencia' | 'fim';
 const ARQ: Record<Faixa, string> = {
-  capa: 'capa.mp3', chamado: 'chamado.ogg', cena: 'cena.mp3', custodia: 'custodia.ogg', lab: 'lab.mp3', tensao: 'tensao.mp3', audiencia: 'audiencia.mp3', fim: 'fim.mp3',
+  capa: 'capa.mp3', chamado: 'chamado.mp3', cena: 'cena.mp3', custodia: 'custodia.mp3', lab: 'lab.mp3', tensao: 'tensao.mp3', audiencia: 'audiencia.mp3', fim: 'fim.mp3',
 };
 const VOL: Record<Faixa, number> = { capa: 0.5, chamado: 0.35, cena: 0.32, custodia: 0.3, lab: 0.22, tensao: 0.3, audiencia: 0.35, fim: 0.4 };
 

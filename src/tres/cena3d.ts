@@ -4,8 +4,8 @@ import type { Cena } from '../casos/tipos';
 import { M, limparCena } from './motor3d';
 import { J, posicionar } from './jogador';
 import { criarModelo, criarMovel, mat, trocarTela } from './modelos';
-import { Humano } from './humanos';
-import { modeloGlb } from './glb';
+import { Humano, preCarregar } from './humanos';
+import { modeloGlb, preCarregarGlb } from './glb';
 import { pbr } from './pbr';
 
 export interface Alvo {
@@ -21,6 +21,16 @@ interface Proxy {
 const proxies: Proxy[] = [];
 const objetos = new Map<string, THREE.Object3D>();
 export const humanos = new Map<string, Humano>();
+let carregando: Promise<unknown>[] = [];
+/** resolve quando móveis e pessoas da cena chegaram (ou depois de 12 s, para não travar ninguém) */
+export function cenaPronta(): Promise<void> {
+  return Promise.race([Promise.allSettled(carregando).then(() => undefined), new Promise<void>((ok) => setTimeout(ok, 12000))]);
+}
+/** baixa tudo de uma cena antes de entrar nela */
+export function preCarregarCena(c: Cena) {
+  preCarregarGlb([...c.moveis.flatMap((m) => (m.glb ? [m.glb] : [])), ...c.itens.flatMap((i) => (i.glb ? [i.glb] : [])), 'mounted_fluorescent_lights', 'modern_ceiling_lamp_01']);
+  preCarregar(c.pessoas.map((p) => p.modelo ?? 'wagner'));
+}
 const ray = new THREE.Raycaster();
 const centro = new THREE.Vector2(0, 0);
 let destaque: THREE.BoxHelper | null = null;
@@ -66,6 +76,7 @@ export function montarCena(c: Cena, telasExtras: Record<string, string[] | null>
   proxies.length = 0;
   objetos.clear();
   humanos.clear();
+  carregando = [];
   destaque = null;
   const W = c.largura;
   const D = c.profundidade;
@@ -141,6 +152,7 @@ export function montarCena(c: Cena, telasExtras: Record<string, string[] | null>
     const solido = mv.solido !== false && !pisaveis.includes(mv.tipo) && (mv.pos[1] < 0.5);
     if (mv.glb) {
       const { grupo, pronto } = modeloGlb(mv.glb);
+      carregando.push(pronto);
       grupo.position.set(...mv.pos);
       grupo.rotation.y = mv.rot ?? 0;
       if (mv.escala) grupo.scale.setScalar(mv.escala);
@@ -170,6 +182,7 @@ export function montarCena(c: Cena, telasExtras: Record<string, string[] | null>
     let g: THREE.Group;
     if (it.glb) {
       const m = modeloGlb(it.glb);
+      carregando.push(m.pronto);
       g = m.grupo;
       const alvo: Alvo = { tipo: 'item', id: it.id };
       void m.pronto.then(() => adicionarProxy(g, alvo));
@@ -191,12 +204,13 @@ export function montarCena(c: Cena, telasExtras: Record<string, string[] | null>
 
   for (const p of c.pessoas) {
     // gente de verdade (MakeHuman, CC0) com animação; o modelo carrega em segundo plano
-    const hum = new Humano(p.modelo ?? 'kevin');
+    const hum = new Humano(p.modelo ?? 'wagner');
     hum.sentado = !!p.sentado;
     const g = hum.raiz;
     g.position.set(p.pos[0], 0, p.pos[1]);
     g.rotation.y = p.rot;
     M.cena.add(g);
+    carregando.push(hum.pronto);
     void hum.pronto.then(() => hum.tocar('parado'));
     M.atualizar.add((dt) => hum.update(dt));
     humanos.set(p.id, hum);
