@@ -104,7 +104,10 @@ export function montarCena(c: Cena, telasExtras: Record<string, string[] | null>
     M.cena.add(p);
     // luminária de verdade no teto (fluorescente de repartição ou plafon de casa)
     const lum = modeloGlb(c.luz === 'fluor' || c.luz === 'garagem' ? 'mounted_fluorescent_lights' : 'modern_ceiling_lamp_01');
-    lum.grupo.position.set(p.position.x, c.luz === 'fluor' || c.luz === 'garagem' ? H : H - 0.95, p.position.z);
+    const fluor = c.luz === 'fluor' || c.luz === 'garagem';
+    if (!fluor) lum.grupo.scale.setScalar(0.55);
+    // plafon encostado no teto: o modelo vai de 0,22 a 1,17 m na altura
+    lum.grupo.position.set(p.position.x, fluor ? H : H - 1.17 * 0.55, p.position.z);
     M.cena.add(lum.grupo);
     const brilho = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.5), new THREE.MeshStandardMaterial({ color: '#ffffff', emissive: L.ponto, emissiveIntensity: 1.2, side: THREE.DoubleSide }));
     brilho.rotation.x = Math.PI / 2;
