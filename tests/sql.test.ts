@@ -17,6 +17,10 @@ describe('sql', () => {
     const r = executar(tb, 'SELECT j.nome, count(*) AS n FROM messages m JOIN jid j ON m.key_remote_jid = j.raw_string GROUP BY j.nome ORDER BY n DESC');
     expect(r.linhas).toEqual([['Tia', 2], ['Golpista', 1]]);
   });
+  it('count distinct', () => {
+    expect(executar(tb, 'SELECT count(DISTINCT key_remote_jid) FROM messages').linhas).toEqual([[2]]);
+    expect(executar(tb, 'SELECT count(key_remote_jid) FROM messages').linhas).toEqual([[3]]);
+  });
   it('nome da coluna sem alias fica legível', () => {
     const r = executar(tb, "select datetime(timestamp/1000,'unixepoch') from messages limit 1");
     expect(r.colunas[0]).toBe("datetime(timestamp/1000,'unixepoch')");

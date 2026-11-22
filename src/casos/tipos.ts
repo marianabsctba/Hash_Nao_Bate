@@ -121,6 +121,8 @@ export interface Quesito {
   texto: string;
   formato: string;
   tipo: 'texto' | 'hora' | 'numero' | 'hash' | 'lista';
+  /** para número: diferença aceita (ex.: 0.0005 em coordenada) */
+  tolerancia?: number;
   respostas: string[];
   explicacao: string;
   /** devolve true quando a falha na cena tornou o quesito impossível de responder */

@@ -314,6 +314,17 @@ registrar('exifeiro', {
   return (args.length > 1 ? `======== ${p}\n` : '') + Object.entries(tudo).map(([k, v]) => `${k.padEnd(32)}: ${v}`).join('\n');
 }).join('\n'));
 
+registrar('ver', {
+  resumo: 'abre a imagem no visualizador da estação (descreve o que aparece)',
+  uso: 'ver <imagem.jpg>',
+  nota: 'Olhar a imagem é obrigatório antes de concluir qualquer coisa sobre ela. Metadado sem conteúdo é meia prova.',
+}, (args, _e, ctx) => args.map((p) => {
+  const a = pegarArq(ctx, p);
+  if (a.especial?.tipo !== 'jpeg') throw new Error(`${p}: não é imagem que o visualizador abra`);
+  ctx.evento('ver', { arquivo: p });
+  return `[${p.split('/').pop()}] ${a.especial.legenda}`;
+}).join('\n'));
+
 // ---------- conversor ----------
 function linhaData(rotulo: string, d: Date): string {
   if (isNaN(d.getTime())) return `${rotulo}: valor fora de faixa (formato errado?)`;

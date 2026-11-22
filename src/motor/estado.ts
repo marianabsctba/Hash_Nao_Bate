@@ -102,7 +102,8 @@ export function conferir(q: Quesito, valor: string): boolean {
     }
     case 'numero': {
       const n = v.replace(/[^\d,.-]/g, '').replace(',', '.');
-      return q.respostas.some((r) => Number(r) === Number(n));
+      if (n === '' || isNaN(Number(n))) return false;
+      return q.respostas.some((r) => Math.abs(Number(r) - Number(n)) <= (q.tolerancia ?? 1e-9));
     }
     case 'hash':
       return q.respostas.some((r) => r.toLowerCase() === v.toLowerCase().replace(/\s/g, ''));

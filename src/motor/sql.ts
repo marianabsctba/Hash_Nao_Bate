@@ -48,7 +48,7 @@ type Expr =
   | { k: 'estrela' }
   | { k: 'bin'; op: string; a: Expr; b: Expr }
   | { k: 'un'; op: string; a: Expr }
-  | { k: 'fn'; nome: string; args: Expr[]; estrela?: boolean }
+  | { k: 'fn'; nome: string; args: Expr[]; estrela?: boolean; distinto?: boolean }
   | { k: 'in'; a: Expr; lista: Expr[]; nao: boolean }
   | { k: 'nulo'; a: Expr; nao: boolean };
 
@@ -232,16 +232,17 @@ class Parser {
         this.i++;
         const args: Expr[] = [];
         let estrela = false;
+        let distinto = false;
         if (this.op('*')) { this.i++; estrela = true; }
         else if (!this.op(')')) {
-          if (this.kw('DISTINCT')) this.i++;
+          if (this.kw('DISTINCT')) { this.i++; distinto = true; }
           do {
             args.push(this.expr());
             if (this.kw('AS')) { this.i++; this.i++; } // CAST(x AS INTEGER)
           } while (this.virgula());
         }
         this.pegarOp(')');
-        return { k: 'fn', nome: t.v.toLowerCase(), args, estrela };
+        return { k: 'fn', nome: t.v.toLowerCase(), args, estrela, distinto };
       }
       return { k: 'col', nome: t.v };
     }
@@ -370,7 +371,8 @@ function avaliar(e: Expr, l: Linha, grupo?: Linha[]): Celula {
     case 'fn': {
       if (AGREG.has(e.nome) && grupo) {
         if (e.nome === 'count' && e.estrela) return grupo.length;
-        const vals = grupo.map((g) => avaliar(e.args[0], g)).filter((v) => v !== null);
+        let vals = grupo.map((g) => avaliar(e.args[0], g)).filter((v) => v !== null);
+        if (e.distinto) vals = [...new Map(vals.map((v) => [typeof v + String(v), v])).values()];
         switch (e.nome) {
           case 'count': return vals.length;
           case 'sum': case 'total': return vals.reduce((s: number, v) => s + comoNum(v), 0);
