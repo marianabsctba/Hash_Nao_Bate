@@ -133,6 +133,7 @@ registrar('imajador', {
     const a = pegarArq(ctx, a1);
     const d = imagens.get(a);
     if (!d) throw new Error(`${a1}: não é uma imagem gerada pelo Imajador nesta estação`);
+    if (d.cifrado) { ctx.evento('cifrado', { dispositivo: d.id }); throw new Error(d.cifrado); }
     if (!d.conteudo) throw new Error('imagem sem sistema de arquivos reconhecível (tente formiga)');
     const ponto = `/mnt/${a1.split('/').pop()!.replace(/\.(E01|dd|raw|img|001)$/i, '')}`;
     gravar(ctx.raiz, ponto, d.conteudo());

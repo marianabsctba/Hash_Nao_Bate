@@ -11,6 +11,8 @@ export interface Dispositivo {
   tipo: 'disco' | 'android' | 'ios' | 'iot' | 'veiculo';
   tamanho: string;
   semente: number;
+  /** se preenchido, o volume está criptografado e não monta (mensagem do erro) */
+  cifrado?: string;
   /** o que aparece ao montar a imagem */
   conteudo?: () => Pasta;
   /** arquivos apagados que só a carga por assinatura (carving) devolve */
