@@ -592,7 +592,7 @@ function campoPacote(p: Pacote, c: string, i: number): string {
     case 'tcp.stream': return p.fluxo === undefined ? '' : String(p.fluxo);
     case '_ws.col.Protocol': return p.app ?? p.proto;
     case '_ws.col.Info': return p.info;
-    case 'dns.qry.name': return p.app === 'DNS' ? p.info.split(' ').pop() ?? '' : '';
+    case 'dns.qry.name': return p.app === 'DNS' ? p.info.match(/0x[0-9a-f]+ [A-Z]+ (\S+)/i)?.[1] ?? '' : '';
     case 'http.request.method': return http?.[1] ?? '';
     case 'http.request.uri': return http?.[2] ?? '';
     case 'http.host': return p.dados?.match(/Host: (\S+)/)?.[1] ?? '';
