@@ -1,5 +1,6 @@
 // Controlador: capa, chamado, cena 3D, cadeia de custódia, laboratório, laudo, audiência e fim.
 import { CASOS, casoPorId } from './casos';
+import { MISSOES } from './casos/missoes';
 import type { Acao, Caso, Embalagem, ItemCena, Pessoa } from './casos/tipos';
 import { EMBALAGENS } from './casos/tipos';
 import { calcularNota, carregar, conferir, novaPartida, proximoLacre, salvar } from './motor/estado';
@@ -255,7 +256,9 @@ function telaChamado() {
   ir.disabled = true;
   acoes.append(ir, botao('Voltar', telaCapa));
   ui.append(col, h('div', 'chamado-dir'));
-  (ui.lastChild as HTMLElement).append(oficio, acoes);
+  const dossie = h('div', 'dossie');
+  dossie.innerHTML = htmlMissao(c, true);
+  (ui.lastChild as HTMLElement).append(dossie, oficio, acoes);
   let i = 0;
   const prox = () => {
     if (i >= c.chamado.length) { ir.disabled = false; return; }
@@ -291,7 +294,7 @@ function telaCena() {
   const topo = h('div', 'hud-topo');
   const mira = h('div', 'mira');
   const rotulo = h('div', 'mira-rotulo');
-  const dicas = h('div', 'hud-dicas', '<kbd>WASD</kbd> andar · <kbd>mouse</kbd> olhar · <kbd>E</kbd> interagir · <kbd>F</kbd> fotografar · <kbd>G</kbd> luvas · <kbd>C</kbd> agachar · <kbd>Q</kbd> quesitos');
+  const dicas = h('div', 'hud-dicas', '<kbd>WASD</kbd> andar · <kbd>mouse</kbd> olhar · <kbd>E</kbd> interagir · <kbd>F</kbd> fotografar · <kbd>G</kbd> luvas · <kbd>C</kbd> agachar · <kbd>Q</kbd> missão e quesitos');
   const toqueBtns = h('div', 'toque-btns');
   toqueBtns.append(botao('E', interagir, 'btn redondo'), botao('📷', fotografar, 'btn redondo'), botao('🧤', luvas, 'btn redondo'));
   const clique = h('div', 'clique-inicio', 'Clique para olhar em volta');
@@ -299,7 +302,9 @@ function telaCena() {
   atualizarHud();
   if (!flag('viu_intro_cena')) {
     marcar('viu_intro_cena');
-    toast(`**${caso.cena.local}.** Antes de tocar em qualquer coisa: fotografe o ambiente (F olhando para o nada) e calce as luvas (G).`, 'info', 7000);
+    const c = caso;
+    setTimeout(() => modal(`Chegando: ${esc(c.cena.local)}`, `<div class="dossie dossie-modal">${htmlMissao(c, false)}</div>
+      <p class="sub"><kbd>WASD</kbd> anda, mouse olha, <kbd>E</kbd> interage, <kbd>F</kbd> fotografa, <kbd>G</kbd> luvas, <kbd>Q</kbd> reabre esta missão. Saída: a maleta com a fita amarela.</p>`, [['Começar a perícia', () => {}]]), 600);
   }
   const laco = () => {
     if (!ui.classList.contains('cena')) return;
@@ -351,7 +356,20 @@ camada.addEventListener('click', () => { if (ui.classList.contains('cena') && J.
 
 function verQuesitos() {
   if (!caso) return;
-  modal('Quesitos', `<ol>${caso.quesitos.map((q) => `<li>${md(q.texto)}</li>`).join('')}</ol>`);
+  modal('Sua missão', `<div class="dossie dossie-modal">${htmlMissao(caso, false)}</div><h3>Quesitos</h3><ol>${caso.quesitos.map((q) => `<li>${md(q.texto)}</li>`).join('')}</ol>`);
+}
+
+/** Dossiê do caso: o que aconteceu, o que fazer, passo a passo e armadilhas. */
+function htmlMissao(c: Caso, completo: boolean): string {
+  const m = MISSOES[c.id];
+  if (!m) return '';
+  return `<div class="dossie-cab"><span>DOSSIÊ DO CASO ${String(c.numero).padStart(2, '0')}</span></div>
+  <p class="dossie-manchete">${md(m.manchete)}</p>
+  ${completo ? `<h4>O que aconteceu</h4><p>${md(m.contexto)}</p>` : ''}
+  <h4>Sua missão</h4><p class="dossie-objetivo">${md(m.objetivo)}</p>
+  <h4>Passo a passo</h4><ol class="dossie-passos">${m.passos.map((x) => `<li>${md(x)}</li>`).join('')}</ol>
+  <h4>Cuidado com</h4><ul class="dossie-atencao">${m.atencao.map((x) => `<li>${md(x)}</li>`).join('')}</ul>
+  ${completo ? `<div class="dossie-tags"><b>Você vai aprender:</b> ${m.aprende.map((x) => `<span>${esc(x)}</span>`).join('')}</div>` : ''}`;
 }
 
 function luvas() {
@@ -696,6 +714,7 @@ function telaLab() {
   const corpo = h('div', 'aba-corpo');
   const nomes: [string, () => void][] = [
     ['Quesitos', () => abaQuesitos(corpo)],
+    ['Missão', () => { corpo.dataset.atual = 'Missão'; corpo.innerHTML = `<div class="dossie dossie-modal">${htmlMissao(c, true)}</div>`; }],
     ['Dicas', () => abaDicas(corpo)],
     ['Custódia', () => abaCustodia(corpo)],
     ['Conversor', () => abaConversor(corpo)],

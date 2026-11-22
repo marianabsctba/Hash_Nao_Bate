@@ -282,3 +282,19 @@ select, .q-input { background: #0f1013; color: var(--texto); border: 1px solid v
 .carregando { position: fixed; inset: 0; z-index: 70; background: #070707; display: grid; place-items: center; align-content: center; gap: 30px; transition: opacity 0.45s; font-family: var(--maquina); color: var(--sub); }
 .carregando.some { opacity: 0; pointer-events: none; }
 .carregando .fita-carga { position: relative; left: auto; width: 110vw; transform: rotate(-3deg); }
+
+/* ---------- dossiê do caso ---------- */
+.dossie { background: #14130f; border: 1px solid #3b3626; border-left: 6px solid var(--fita); border-radius: 4px; padding: 16px 18px; margin-bottom: 16px; max-width: 760px; line-height: 1.5; box-shadow: 0 14px 34px #000a; }
+.dossie-modal { box-shadow: none; margin: 0 0 12px; max-width: none; }
+.dossie-cab span { display: inline-block; background: repeating-linear-gradient(-45deg, var(--fita) 0 14px, #111 14px 22px); color: #111; padding: 2px 10px; font-family: var(--titulo); font-weight: 700; letter-spacing: 2px; font-size: 0.85rem; }
+.dossie-cab span { background: var(--fita); }
+.dossie-manchete { font-family: var(--titulo); font-size: 1.3rem; line-height: 1.25; margin: 10px 0 4px; color: #f4f2ea; }
+.dossie h4 { font-family: var(--cond); text-transform: uppercase; letter-spacing: 1px; color: var(--fita); margin: 12px 0 4px; font-size: 0.85rem; }
+.dossie p { margin: 0; color: #d9d7cf; }
+.dossie-objetivo { color: #fff !important; font-weight: 500; }
+.dossie-passos, .dossie-atencao { margin: 0; padding-left: 22px; color: #d9d7cf; }
+.dossie-passos li, .dossie-atencao li { margin: 3px 0; }
+.dossie-atencao li::marker { content: '⚠ '; }
+.dossie-tags { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.82rem; color: var(--sub); }
+.dossie-tags span { border: 1px solid var(--ciano); color: var(--ciano); border-radius: 3px; padding: 1px 8px; }
+.chamado-dir { overflow: visible; }

@@ -5,6 +5,7 @@ import { montarCtx } from '../src/motor/lab';
 import { executarLinha } from '../src/motor/shell';
 import { conferir } from '../src/motor/estado';
 import { SOLUCOES } from './solucoes';
+import { MISSOES } from '../src/casos/missoes';
 
 const semCor = (s: string) => s.replace(/\x1b\[[0-9;]*m/g, '');
 
@@ -19,6 +20,10 @@ describe('casos', () => {
       expect(c.quesitos.length).toBeGreaterThan(0);
       for (const q of c.quesitos) expect(q.respostas.length).toBeGreaterThan(0);
       expect(c.metodologia.some((m) => m.certo)).toBe(true);
+      const m = MISSOES[c.id];
+      expect(m, `caso ${c.id} sem dossiê de missão`).toBeTruthy();
+      expect(m.passos.length).toBeGreaterThan(2);
+      expect(JSON.stringify(m)).not.toMatch(/[–—]/);
       // texto sem travessão
       expect(JSON.stringify(c)).not.toMatch(/[–—]/);
     });
