@@ -15,6 +15,8 @@ import { SALA_AUDIENCIA } from './casos/audiencia3d';
 import type { Alvo } from './tres/cena3d';
 import { abrirInspecao } from './tres/inspecao';
 import { criarTerminal, ansiHtml } from './ui/terminal';
+import type { Terminal } from './ui/terminal';
+import { AJUDAS } from './casos/ajudas';
 import * as Som from './ui/som';
 import * as Trilha from './ui/trilha';
 
@@ -676,6 +678,16 @@ function desenharCroqui(cv: HTMLCanvasElement) {
 
 // ====================== LABORATÓRIO ======================
 let ctxLab: Ctx | null = null;
+let termLab: Terminal | null = null;
+
+/** Troca {FS} e {VEIC} pelo nome real da pasta de extração no storage. */
+function resolverAjuda(cmd: string): string {
+  const ev = ctxLab?.raiz.filhos.evidencias;
+  const nomes = ev && ev.tipo === 'pasta' ? Object.keys(ev.filhos) : [];
+  const fs = nomes.find((n) => n.endsWith('_fs')) ?? 'RODE_A_EXTRACAO_PRIMEIRO_fs';
+  const veic = nomes.find((n) => n.endsWith('_veiculo')) ?? 'RODE_A_EXTRACAO_PRIMEIRO_veiculo';
+  return cmd.split('{FS}').join(fs).split('{VEIC}').join(veic);
+}
 let reproduzindo = false;
 
 function eventoLab(nome: string, d: Record<string, unknown> = {}) {
@@ -706,6 +718,7 @@ function telaLab() {
   const term = criarTerminal(ctxLab, (linha) => {
     if (!reproduzindo && linha.trim()) { P!.historicoLab.push(linha); gravar(); }
   });
+  termLab = term;
   const esq = h('div', 'lab-esq');
   const cab = h('div', 'lab-cab', `<b>Laboratório de Informática Forense</b> · ${esc(c.titulo)} <span class="lab-int">Integridade ${P.integridade} · Credibilidade ${P.credibilidade}</span>`);
   esq.append(cab, term.el);
@@ -773,6 +786,26 @@ function abaQuesitos(corpo: HTMLElement) {
       inp.onkeydown = (e) => { if (e.key === 'Enter') conf.click(); };
       linha.append(inp, conf);
       bloco.append(linha);
+      // a estagiária: onde procurar e, se precisar, o comando pronto
+      const aj = AJUDAS[c.id]?.[q.id];
+      if (aj) {
+        const caixa = h('div', 'ajuda');
+        if (p.flags.includes(`ajuda1:${q.id}`)) caixa.append(h('div', 'ajuda-onde', `🧑‍🔬 <b>Estagiária:</b> ${md(aj.onde)}`));
+        if (p.flags.includes(`ajuda2:${q.id}`) && aj.comandos.length) {
+          const lista = h('div', 'ajuda-cmds');
+          for (const cmd of aj.comandos) {
+            const l = h('div', 'ajuda-cmd');
+            l.append(h('code', '', esc(cmd)), botao('▶ Rodar', () => termLab?.rodar(resolverAjuda(cmd)), 'btn pequeno'));
+            lista.append(l);
+          }
+          caixa.append(lista);
+        }
+        const bts = h('div', 'q-extras');
+        if (!p.flags.includes(`ajuda1:${q.id}`)) bts.append(botao('🧑‍🔬 Onde eu procuro? (-1)', () => { marcar(`ajuda1:${q.id}`); pontuar(0, -1); gravar(); abaQuesitos(corpo); atualizarCustodiaLab(); }, 'btn pequeno'));
+        else if (!p.flags.includes(`ajuda2:${q.id}`) && aj.comandos.length) bts.append(botao('💻 Me mostra o comando (-3)', () => { marcar(`ajuda2:${q.id}`); pontuar(0, -3); gravar(); abaQuesitos(corpo); atualizarCustodiaLab(); }, 'btn pequeno'));
+        caixa.append(bts);
+        bloco.append(caixa);
+      }
       const extras = h('div', 'q-extras');
       extras.append(botao('Quesito prejudicado', () => {
         const prej = q.prejudicado?.(new Set(p.flags)) ?? false;
