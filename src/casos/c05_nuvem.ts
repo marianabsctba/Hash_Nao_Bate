@@ -115,7 +115,7 @@ export const caso05: Caso = {
     parede: '#e5e7eb',
     pisoTex: 'smooth_concrete_floor',
     pisoEscala: 2.5,
-    paredeTex: 'concrete_wall_003',
+    paredeTex: 'grey_plaster',
     luz: 'fluor',
     inicio: [4, 5.3, 0],
     saida: [7.4, 5.5],

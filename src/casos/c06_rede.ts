@@ -103,7 +103,7 @@ export const caso06: Caso = {
     parede: '#d4d4d4',
     pisoTex: 'garage_floor',
     pisoEscala: 2,
-    paredeTex: 'concrete_wall_003',
+    paredeTex: 'grey_plaster',
     luz: 'fluor',
     inicio: [2.7, 3.9, 0],
     saida: [5.0, 4.0],
@@ -125,7 +125,7 @@ export const caso06: Caso = {
     itens: [
       { id: 'rack', modelo: 'servidor', pos: [2.4, 0, 0.55], escala: 1, nome: 'Rack com servidor de arquivos e firewall', descricao: 'Rack de 42U com servidor de arquivos, firewall de prateleira e um emaranhado de cabos que é tecnicamente um ninho. O firewall registra só bloqueios, não o que passou.', detalhes: ['Firewall: logs só de bloqueio, 7 dias', 'Servidor de arquivos: FILESERVER'], acoes: [] },
       {
-        id: 'switch', modelo: 'switch', pos: [3.6, 1.0, 0.5], relevante: true,
+        id: 'switch', modelo: 'switch', pos: [4.4, 0.68, 0.4], relevante: true,
         nome: 'Switch gerenciável (núcleo da rede)',
         descricao: 'Switch de 24 portas que liga todos os computadores ao firewall. Tem porta de espelhamento (SPAN) configurável. Do lado, a TI deixou um TAP de rede passivo ainda na caixa.',
         detalhes: ['Uplink do firewall: porta 24', 'TAP passivo: caixa lacrada ao lado', 'Último reboot: 214 dias'],
